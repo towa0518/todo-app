@@ -21,34 +21,55 @@ const TodoTitle = ({ title, as }) => {
 };
 
 // TodoItem コンポーネントを作成
-// 親コンポーネントから todo を props として受け取る
-const TodoItem = ({ todo }) => {
+// 親コンポーネントから todo、toggleTodoListItemStatus、
+// deleteTodoListItem を props として受け取る
+const TodoItem = ({ todo, toggleTodoListItemStatus, deleteTodoListItem }) => {
+  // TODOの状態(完了/未完了)を反転させる toggleTodoListItemStatus 関数を
+  // 実行させる handleToggleTodoListItemStatus 関数を宣言
+  const handleToggleTodoListItemStatus = () =>
+    toggleTodoListItemStatus(todo.id, todo.done);
+
+  // TODOを削除する deleteTodoListItem 関数を実行させる
+  // handleDeleteTodoListItem 関数を宣言
+  const handleDeleteTodoListItem = () => deleteTodoListItem(todo.id);
+
   return (
     <li>
       {/* TODOの内容 */}
       {todo.content}
 
-      {/* TODOが完了の場合は「未完了リストへ」、未完了の場合は
-          「完了リストへ」と表示するボタンを設置する */}
-      <button>{todo.done ? "未完了リストへ" : "完了リストへ"}</button>
+      {/* ボタンクリックで handleToggleTodoListItemStatus 関数を実行 */}
+      {/* ボタンクリックでTODOの状態(完了/未完了)が反転 */}
+      <button onClick={handleToggleTodoListItemStatus}>
+        {todo.done ? "未完了リストへ" : "完了リストへ"}
+      </button>
 
-      {/* TODOの「削除」ボタンを設置しておく */}
-      {/* 現時点で「削除」ボタンは機能していない */}
-      <button>削除</button>
+      {/* ボタンクリックで handleDeleteTodoListItem 関数を実行 */}
+      {/* ボタンクリックでTODOを削除 */}
+      <button onClick={handleDeleteTodoListItem}>削除</button>
     </li>
   );
 };
 
 // TodoList コンポーネントを作成
 // 親コンポーネントから todoList を props として受け取る
-const TodoList = ({ todoList }) => {
+const TodoList = ({
+  todoList,
+  toggleTodoListItemStatus,
+  deleteTodoListItem,
+}) => {
   return (
     <ul>
       {/* map() を利用して todoList の要素を1つひとつ取り出す */}
       {todoList.map((todo) => (
         // TodoItem に一意なIDを key 属性の値として付与
         // todoList から取り出した todo を子コンポーネントへ props で渡す
-        <TodoItem todo={todo} key={todo.id} />
+        <TodoItem
+          todo={todo}
+          key={todo.id}
+          toggleTodoListItemStatus={toggleTodoListItemStatus}
+          deleteTodoListItem={deleteTodoListItem}
+        />
       ))}
     </ul>
   );
@@ -68,14 +89,16 @@ const TodoAdd = ({ inputEl, handleAddTodoListItem }) => {
       <button onClick={handleAddTodoListItem}>+ TODOを追加</button>
     </>
   );
-}
+};
 
 function App() {
   // useTodo() カスタムフックで作成した todoList addTodoListItem を利用する
   // todoList は現在のTODOの状態
   const {
     todoList,
-    addTodoListItem
+    addTodoListItem,
+    toggleTodoListItemStatus,
+    deleteTodoListItem,
   } = useTodo();
 
   // useRef で refオブジェクトを作成(TODO入力フォームで利用)
@@ -93,7 +116,7 @@ function App() {
     // 「+ TODOを追加」ボタンクリックで実行
     addTodoListItem(inputEl.current.value);
     inputEl.current.value = "";
-  }
+  };
 
   // console.log でコンソールに取得した TODO リストの情報を表示してみる
   console.log("TODOリスト", todoList);
@@ -122,7 +145,10 @@ function App() {
       {/* useTodo()カスタムフックで作成した inputEl を
           子コンポーネントへ props で渡す */}
       {/* 「+ TODOを追加」ボタンをクリックで handleAddTodoListItem 関数を実行 */}
-      <TodoAdd inputEl={inputEl} handleAddTodoListItem={handleAddTodoListItem} />
+      <TodoAdd
+        inputEl={inputEl}
+        handleAddTodoListItem={handleAddTodoListItem}
+      />
 
       {/* h2見出しタグを TodoTitle コンポーネントに */}
       {/* 見出しに表示させたいテキストを title に代入して
@@ -133,7 +159,19 @@ function App() {
       {/* TodoList コンポーネント */}
       {/* 未完了TODOリスト inCompletedList を todoList に代入して
           子コンポーネントへ props で渡す */}
-      <TodoList todoList={inCompletedList} />
+      <TodoList
+        todoList={inCompletedList}
+        // useTodo() カスタムフックで作成した toggleTodoListItemStatus 関数を
+        // 子コンポーネントへ props で渡す
+        // toggleTodoListItemStatus 関数は todoListItem の done(完了/未完了)
+        // を反転させて更新する
+        toggleTodoListItemStatus={toggleTodoListItemStatus}
+        // useTodo() カスタムフックで作成した deleteTodoListItem 関数を
+        // 子コンポーネントへ props で渡す
+        // deleteTodoListItem 関数は各TODOに設置した「削除」ボタンを
+        // クリックしたときに実行してTODOを削除する
+        deleteTodoListItem={deleteTodoListItem}
+      />
 
       {/* h2見出しタグを TodoTitle コンポーネントに */}
       {/* 見出しに表示させたいテキストを title に代入して
@@ -144,7 +182,19 @@ function App() {
       {/* TodoList コンポーネント */}
       {/* 未完了TODOリスト completedList を todoList に代入して
           子コンポーネントへ props で渡す */}
-      <TodoList todoList={completedList} />
+      <TodoList
+        todoList={completedList}
+        // useTodo() カスタムフックで作成した toggleTodoListItemStatus 関数を
+        // 子コンポーネントへ props で渡す
+        // toggleTodoListItemStatus 関数は todoListItem の done(完了/未完了)
+        // を反転させて更新する
+        toggleTodoListItemStatus={toggleTodoListItemStatus}
+        // useTodo() カスタムフックで作成した deleteTodoListItem 関数を
+        // 子コンポーネントへ props で渡す
+        // deleteTodoListItem 関数は各TODOに設置した「削除」ボタンを
+        // クリックしたときに実行してTODOを削除する
+        deleteTodoListItem={deleteTodoListItem}
+      />
     </>
   );
 }
