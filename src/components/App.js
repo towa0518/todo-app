@@ -1,10 +1,5 @@
-import React, { useState, useEffect } from "react";
-
-// モックサーバーとの通信斗のため axios を import
-import axios from "axios";
-
-// ローカルに準備したモックサーバーの URL
-const todoDataUrl = "http://localhost:3100/todos";
+// useTodo() カスタムフックを import
+import { useTodo } from "../hooks/useTodo";
 
 // TodoTitle コンポーネントを作成
 // 見出しタグが h1、h2 の場合の条件分岐を作成しておく
@@ -57,26 +52,9 @@ const TodoList = ({ todoList }) => {
 };
 
 function App() {
-  // todoList は現在の TODO の状態
-  // setTodoList は現在の todoList の状態を更新するための関数
-  // todoList の初期値に空の配列をセット
-  const [todoList, setTodoList] = useState([]);
-
-  // useEffect() を利用することでコンポーネントのマウント後に処理を実行
-  // async/await で非同期処理
-  useEffect(() => {
-    const fetchData = async () => {
-      // get は外部から情報を取得する基本メソッド
-      // get の引数に URL を入れると、URL に対して GET リクエストを送信
-      // リクエスト語に戻ってくる値はすべて response に保存される
-      const response = await axios.get(todoDataUrl);
-
-      // 戻された値について useState を利用して、
-      // todoList の現在の値としてセットする
-      setTodoList(response.data);
-    };
-    fetchData();
-  }, []);
+  // useTodo() カスタムフックで作成した todoList を利用できるようにする
+  // todoList は現在のTODOの状態
+  const { todoList } = useTodo();
 
   // console.log でコンソールに取得した TODO リストの情報を表示してみる
   console.log("TODOリスト", todoList);
