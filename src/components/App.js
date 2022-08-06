@@ -54,6 +54,22 @@ const TodoList = ({ todoList }) => {
   );
 };
 
+// TodoAdd コンポーネントを作成
+// 親コンポーネントから inputEl、handleAddTodoListItem を
+// props として受け取る
+const TodoAdd = ({ inputEl, handleAddTodoListItem }) => {
+  return (
+    <>
+      {/* useRef() で作成した refオブジェクトを ref属性に指定してDOMを参照する */}
+      <textarea ref={inputEl} />
+
+      {/* 「+ TODOを追加」ボタンをクリックで handleAddListItem 関数を
+          実行 */}
+      <button onClick={handleAddTodoListItem}>+ TODOを追加</button>
+    </>
+  );
+}
+
 function App() {
   // useTodo() カスタムフックで作成した todoList addTodoListItem を利用する
   // todoList は現在のTODOの状態
@@ -100,12 +116,13 @@ function App() {
       {/* h1 を as に代入して子コンポーネントへ props で渡す */}
       <TodoTitle title="TODO進捗管理" as="h1" />
 
-      {/* useRef() で作成した refオブジェクトを ref属性に指定してDOMを参照する */}
-      <textarea ref={inputEl} />
-
-      {/* 「+ TODOを追加」ボタンをクリックで handleAddListItem 関数を
-          実行 */}
-      <button onClick={handleAddTodoListItem}>+ TODOを追加</button>
+      {/* TODO追加フォーム TodoAdd コンポーネントを作成 */}
+      {/* useTodo() カスタムフックで作成した handleAddTodoListItem 関数を
+          子コンポーネントへ props で渡す */}
+      {/* useTodo()カスタムフックで作成した inputEl を
+          子コンポーネントへ props で渡す */}
+      {/* 「+ TODOを追加」ボタンをクリックで handleAddTodoListItem 関数を実行 */}
+      <TodoAdd inputEl={inputEl} handleAddTodoListItem={handleAddTodoListItem} />
 
       {/* h2見出しタグを TodoTitle コンポーネントに */}
       {/* 見出しに表示させたいテキストを title に代入して
