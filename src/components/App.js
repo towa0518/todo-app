@@ -1,3 +1,6 @@
+// useRef を利用できるようにする(TODO入力フォームで利用)
+import React, { useRef } from "react";
+
 // useTodo() カスタムフックを import
 import { useTodo } from "../hooks/useTodo";
 
@@ -52,9 +55,29 @@ const TodoList = ({ todoList }) => {
 };
 
 function App() {
-  // useTodo() カスタムフックで作成した todoList を利用できるようにする
+  // useTodo() カスタムフックで作成した todoList addTodoListItem を利用する
   // todoList は現在のTODOの状態
-  const { todoList } = useTodo();
+  const {
+    todoList,
+    addTodoListItem
+  } = useTodo();
+
+  // useRef で refオブジェクトを作成(TODO入力フォームで利用)
+  const inputEl = useRef(null);
+
+  // TODO入力フォームで入力された文字列を新しいTODOに登録するための
+  // handleAddTodoListItem 関数を宣言
+  const handleAddTodoListItem = () => {
+    // 何も入力されていない場合にクリックしても何も返さない
+    if (inputEl.current.value === "") return;
+
+    // テキストエリアに入力されたテキストを新規TODOとして追加
+    // 追加したら、テキストエリアを空の文字列にする
+    // 新規TODOを追加する addTodoListItem 関数を
+    // 「+ TODOを追加」ボタンクリックで実行
+    addTodoListItem(inputEl.current.value);
+    inputEl.current.value = "";
+  }
 
   // console.log でコンソールに取得した TODO リストの情報を表示してみる
   console.log("TODOリスト", todoList);
@@ -77,11 +100,12 @@ function App() {
       {/* h1 を as に代入して子コンポーネントへ props で渡す */}
       <TodoTitle title="TODO進捗管理" as="h1" />
 
-      {/* 現時点で textarea は機能していない */}
-      <textarea />
+      {/* useRef() で作成した refオブジェクトを ref属性に指定してDOMを参照する */}
+      <textarea ref={inputEl} />
 
-      {/* 現時点で TODOを追加 button は機能していない */}
-      <button>+ TODOを追加</button>
+      {/* 「+ TODOを追加」ボタンをクリックで handleAddListItem 関数を
+          実行 */}
+      <button onClick={handleAddTodoListItem}>+ TODOを追加</button>
 
       {/* h2見出しタグを TodoTitle コンポーネントに */}
       {/* 見出しに表示させたいテキストを title に代入して
