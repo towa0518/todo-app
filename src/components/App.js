@@ -1,6 +1,12 @@
 // useRef を利用できるようにする(TODO入力フォームで利用)
 import React, { useRef } from "react";
 
+// Chakra UI の Container コンポーネントを利用できるようにする
+import { Container } from "@chakra-ui/react";
+
+// Chakra UI の AddIcon コンポーネントを利用できるようにする
+import { AddIcon } from "@chakra-ui/icons";
+
 // useTodo() カスタムフックを import
 import { useTodo } from "../hooks/useTodo";
 
@@ -54,12 +60,26 @@ function App() {
   });
 
   return (
-    <>
+    // Container コンポーネントはデフォルトで div タグとして書き出される
+    // centerContent で center 寄せのレイアウトになる
+    // モバイル表示で padding は 4 = 1rem = 16px;
+    // 最初の Breakpoint "md": = "48em" (=768px) を境界として
+    // PC表示で padding は 6 = 1.5rem = 24px;
+    // max-width は 3xl = 48rem = 768px
+    <Container centerContent p={{ base: "4", md: "6"}} maxWidth="3xl">
       {/* h1見出しタグを TodoTitle コンポーネントに */}
       {/* 見出しに表示させたいテキストを title に代入して
           子コンポーネントへ props で渡す */}
       {/* h1 を as に代入して子コンポーネントへ props で渡す */}
-      <TodoTitle title="TODO進捗管理" as="h1" />
+      <TodoTitle
+        title="TODO進捗管理"
+        as="h1"
+
+        // モバイル表示で font-size は 2xl = 1.5rem = 24px
+        // 最初の Breakpoint "md"; = "48em" (=768px) を境界として
+        // PC表示で font-size は 3xl = 1.8725rem = 30px;
+        fontSize={{ base: "2xl", md: "3xl" }}
+      />
 
       {/* TODO追加フォーム TodoAdd コンポーネントを作成 */}
       {/* useTodo() カスタムフックで作成した handleAddTodoListItem 関数を
@@ -68,7 +88,9 @@ function App() {
           子コンポーネントへ props で渡す */}
       {/* 「+ TODOを追加」ボタンをクリックで handleAddTodoListItem 関数を実行 */}
       <TodoAdd
-        buttonText="+ TODOを追加"
+        placeholder="ADD TODO"
+        leftIcon={<AddIcon />}
+        buttonText="TODOを追加"
         inputEl={inputEl}
         handleAddTodoListItem={handleAddTodoListItem}
       />
@@ -90,6 +112,7 @@ function App() {
         deleteTodoListItem={deleteTodoListItem}
         title="未完了TODOリスト"
         as="h2"
+        fontSize={{ base: "xl", md: "2xl" }}
       />
 
       {/* TodoList コンポーネント */}
@@ -109,8 +132,9 @@ function App() {
         deleteTodoListItem={deleteTodoListItem}
         title="完了TODOリスト"
         as="h2"
+        fontSize={{ base: "xl", md: "2xl" }}
       />
-    </>
+    </Container>
   );
 }
 

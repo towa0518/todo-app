@@ -11,13 +11,13 @@ const theme = extendTheme({
       body: {
         // body に設定したい style を市営
         backgroudColor: "orange.50",
-        color: "gray.800"
+        color: "gray.800",
       },
       p: {
         // md を境にPC表示とSP表示を切り替える
         // SP表示で md = 1rem = 16px、PC表示で lg = 1.125rem = 18px
         fontSize: { base: "md", md: "lg"},
-        lineHight: "tall" // tall = 1.5
+        lineHeight: "tall" // tall = 1.5
       }
     }
   }
